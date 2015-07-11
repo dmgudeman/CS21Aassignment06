@@ -27,7 +27,7 @@ class Game(object):
     computer_color = 'blue'
     board = tkinter.Canvas()
     tile_owner = 0
-    score = {}
+    sq_avail = {}
     user_score = 0
     comp_score = 0
     total_score = 0
@@ -54,17 +54,17 @@ class Game(object):
 
         self.board.bind("<Button-1>", self.play)
 
-        Game.score = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
+        Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                       (1, 0): 0, (1, 1): 0, (1, 2): 0,
                       (2, 0): 0, (2, 1): 0, (2, 2): 0}
-        print("__init__ len(Game.score.card)", len(Game.score))
+        print("__init__ len(Game.score.card)", len(Game.sq_avail))
 
 
     def initialize_game(self):
         # These are the initializations that need to happen
         # at the beginning and after restarts
 
-        Game.score = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
+        Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                       (1, 0): 0, (1, 1): 0, (1, 2): 0,
                       (2, 0): 0, (2, 1): 0, (2, 2): 0}
         for row in range(3):
@@ -81,11 +81,6 @@ class Game(object):
                                             fill=color)
         self.board.grid()
 
-
-
-
-
-
     def restart(self):
         # This method is invoked when the user clicks on the RESTART button.
         # Erase the canvas
@@ -95,12 +90,9 @@ class Game(object):
     def play(self, event):
         # This method is invoked when the user clicks on a square.
         # If the square is already taken, do nothing.
-        print(type(Game.score))
-        print("play self.score_card.len() =", len(Game.score))
-        print("play top_ game  Game.user_score", Game.user_score)
         grid_row = event.x // 100
         grid_column = event.y // 100
-        if Game.score[(grid_row, grid_column)] == 0:
+        if Game.sq_avail[(grid_row, grid_column)] == 0:
             for row in range(3):
                 for column in range(3):
                     if row == grid_row and column == grid_column:
@@ -109,33 +101,31 @@ class Game(object):
                                                 grid_row*100+100,
                                                 grid_column*100+100,
                                                 fill='black')
-                        Game.score[(row, column)] = 5
-                        print("Game.user_score =", Game.user_score)
-                        self.check_game()
-                        self.computer_move()
+                        Game.sq_avail[(row, column)] = 5
+                        Game.check_game(self)
+                        Game.computer_move(self)
                         print("this fired")
 
         else:
             print('')
         self.board.grid()
-        print("play - bottom  Game.user_score", Game.user_score)
 
     def computer_move(self):
         ran_x = random.randint(0, 2)
         ran_y = random.randint(0, 2)
+        print("entered computer_move")
 
-        if Game.score[(ran_x, ran_y)] == 0:
-            Game.score[(ran_x, ran_y)] = 5
+        if Game.sq_avail[(ran_x, ran_y)] == 0:
+            Game.sq_avail[(ran_x, ran_y)] = 3
             self.board.create_rectangle(ran_x*100,
                                                 ran_y*100,
                                                 ran_x*100+100,
                                                 ran_y*100+100,
                                                 fill='white')
-            Game.check_game()
+            Game.check_game(self)
             self.board.grid()
         else:
             self.computer_move()
-
     def check_game(self):
         # Check if the game is won or lost
         # Return True or False
@@ -143,35 +133,57 @@ class Game(object):
         column_total = 0
         diag_leftdown = 0
         diag_leftup = 0
+        line_list = []
+        i = 0
         for x in range(3):
             for y in range(3):
-                row_total += Game.score[(x, y)]
+                i += 1
+                row_total += Game.sq_avail[(x, y)]
+                if row_total == 15:
+                    print("you won row_total", row_total)
+                    exit()
+                if row_total == 9:
+                    print("the computer won row total", row_total)
+                    exit()
+                if i == 3:
+                    i = 0
+                    row_total = 0
         for y in range(3):
             for x in range(3):
-                column_total += Game.score[(x, y)]
-        diag_leftdown = Game.score[(0, 0)] + Game.score[(1, 1)] \
-                        + Game.score[(2, 2)]
-        diag_leftup = Game.score[(2, 0)] + Game.score[(1, 1)] \
-                      + Game.score[(0, 2)]
-        score_list = [row_total, column_total, diag_leftup, diag_leftdown]
+                i += 1
+                column_total += Game.sq_avail[(x, y)]
+                if column_total == 15:
+                    print("you won column total", column_total)
+                    exit()
+                if row_total == 9:
+                    print("the computer won row total", row_total)
+                    exit()
+                if i == 3:
+                    i = 0
+                    column_total = 0
 
-        for x in score_list:
-            print("x ", x)
+        diag_leftdown = Game.sq_avail[(0, 0)] + Game.sq_avail[(1, 1)] \
+                                           + Game.sq_avail[(2, 2)]
+        if diag_leftdown == 15:
+            print("you won diag_up", diag_leftdown)
+            exit()
+        if row_total == 9:
+            print("the computer won row total", row_total)
+            exit()
+        diag_leftup = Game.sq_avail[(2, 0)] + Game.sq_avail[(1, 1)] \
+                                         + Game.sq_avail[(0, 2)]
+        if diag_leftup == 15:
+            print("you won diag_leftup", diag_leftup)
+            exit()
+        if row_total == 9:
+            print("the computer won row total", row_total)
+            exit()
 
-        for x in score_list:
-            if Game.user_score == 15:
-                print(" check_game Game.user_score = ", Game.user_score)
-                print("You won")
-                exit()
-            else:
-                Game.user_score += 5
-            if Game.comp_score == 30:
-                print("computer won")
-                exit()
-            else:
-                Game.comp_score += 10
-
-                # Add your method definitions here
+        #score_list = [row_total, column_total, diag_leftup,
+       #                       diag_leftdown]
+#
+       # for x in score_list:
+         #   print("x ", x)
 
 def main():
     # Instantiate a root window
