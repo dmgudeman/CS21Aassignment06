@@ -11,6 +11,8 @@ import tkinter
 import random
 
 
+
+tally_array = []
 class Game(object):
     '''
     Enter the class docstring here
@@ -24,6 +26,9 @@ class Game(object):
     user_color = 'green'
     computer_color = 'blue'
     board = tkinter.Canvas()
+    tile_owner = 0
+    score_card = {}
+
 
     def __init__(self, parent):
         parent.title('Tic Tac Toe')
@@ -42,7 +47,23 @@ class Game(object):
         self.board = tkinter.Canvas(self.parent, width=self.tile_size * 3,
                                     height=self.tile_size * 3)
 
+        self.initialize_game()
 
+        self.board.bind("<Button-1>", self.play)
+
+        Game.score_card = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
+                      (1, 0): 0, (1, 1): 0, (1, 2): 0,
+                      (2, 0): 0, (2, 1): 0, (2, 2): 0}
+        print("__init__ len(self.score.card)", len(Game.score_card))
+
+
+    def initialize_game(self):
+        # These are the initializations that need to happen
+        # at the beginning and after restarts
+
+        Game.score_card = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
+                      (1, 0): 0, (1, 1): 0, (1, 2): 0,
+                      (2, 0): 0, (2, 1): 0, (2, 2): 0}
         for row in range(3):
             for column in range(3):
                 if(row + column) % 2 == 0:
@@ -58,17 +79,8 @@ class Game(object):
         self.board.grid()
 
 
-        self.board.bind("<Button-1>", self.play)
 
 
-
-        self.initialize_game()
-
-    def initialize_game(self):
-        # These are the initializations that need to happen
-        # at the beginning and after restarts
-
-        pass
 
     def restart(self):
         # This method is invoked when the user clicks on the RESTART button.
@@ -79,37 +91,32 @@ class Game(object):
     def play(self, event):
         # This method is invoked when the user clicks on a square.
         # If the square is already taken, do nothing.
-
+        print(type(Game.score_card))
+        print("play self.score_card.len() =", len(Game.score_card))
         grid_row = event.y // 100
         grid_column = event.x // 100
-        print(grid_row)
-        print(grid_column)
-        print(self.board.grid_info())
-        self.board.configure()
-       # for row in range(3):
-        #    for column in range(3):
-           #     if row == grid_row & column == grid_column:
-             #       self.board.configure()
         for row in range(3):
             for column in range(3):
-                if row == grid_row and column == grid_column:
-                    print('yes')
-                    print(self.board.grid_location(row, column))
-        
+                if row == grid_row and column == grid_column \
+                        and Game.score_card[(row, column)] == 0:
+                    print(Game.score_card[(1, 1)])
                     self.board.create_rectangle(grid_column*100,
                                                 grid_row*100,
                                                 grid_column*100+100,
                                                 grid_row*100+100,
                                                 fill='black')
+                    Game.score_card[(row, column)] = 5
+                    print(type(Game.score_card))
+                    print(Game.score_card[(row, column)])
+                    print("this fired")
 
-                   # print("row:", row, " igrid_row:", grid_row)
-                   # print("column:", column, " igrid_column ", grid_column)
                 else:
-                    print('no')
-                    #print("row:", row, " grid_row:", grid_row)
-
-                    #print("column:", column, " grid_column ", grid_column)
+                    print('')
         self.board.grid()
+
+    def computer_move(self):
+        pass
+
     def check_game(self):
         # Check if the game is won or lost
         # Return True or False
@@ -119,13 +126,13 @@ class Game(object):
 
         # Add your method definitions here
 
-
 def main():
     # Instantiate a root window
     # Instantiate a Game object
     # Enter the main event loop
     root = tkinter.Tk()
     ttgame = Game(root)
+
     root.mainloop()
 
 
