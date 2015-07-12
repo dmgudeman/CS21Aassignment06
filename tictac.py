@@ -93,21 +93,16 @@ class Game(object):
                     for column in range(3):
                         if row == grid_row and column == grid_column:
                             self.board.create_rectangle(grid_row * 100,
-                                                        grid_column * 100,
-                                                        grid_row * 100 + 100,
-                                                        grid_column * 100 + 100,
-                                                        fill=self.user_color)
+                                                    grid_column * 100,
+                                                    grid_row * 100 + 100,
+                                                    grid_column * 100 + 100,
+                                                    fill=self.user_color)
                             Game.sq_avail[(row, column)] = 5
                             Game.turns += 1
                             Game.check_game(self)
                             if not self.game_over:
                                 Game.computer_move(self)
                                 Game.check_game(self)
-                            #if self.game_over:
-                                #print("game over")
-                            #print("this fired")
-
-                self.board.grid()
 
     def computer_move(self):
         ran_x = random.randint(0, 2)
@@ -191,10 +186,6 @@ class Game(object):
             self.game_over = True
             return self.game_over
         return self.game_over
-
-    def show_result(self, message):
-        self.parent.sb_message.set(message)
-
 
 def main():
     # Instantiate a root window
