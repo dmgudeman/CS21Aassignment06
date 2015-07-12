@@ -16,12 +16,7 @@ class Game(object):
     Enter the class docstring here
     '''
 
-    # Add your class variables if needed here
-    tile_owner = 0
     sq_avail = {}
-    user_score = 0
-    comp_score = 0
-    total_score = 0
     turns = 0
     board_color = 'green'
 
@@ -30,7 +25,6 @@ class Game(object):
         self.parent = parent
         self.user_color = 'cyan'
         self.comp_color = 'yellow'
-
 
         # Add your instance variables  if needed here
         # Create the restart button widget
@@ -47,7 +41,7 @@ class Game(object):
         self.parent.sb_message = tkinter.StringVar()
         self.parent.sb_message.set('Scorecard')
         self.parent.scoreboard_label = tkinter.Label(self.parent,
-                                                     textvariable=self.parent.sb_message)
+                                        textvariable=self.parent.sb_message)
         self.parent.scoreboard_label.grid()
 
         self.board = tkinter.Canvas(self.parent, width=self.tile_size * 3,
@@ -195,7 +189,6 @@ def main():
     print("root = ", type(root))
     ttgame = Game(root)
     root.mainloop()
-
 
 if __name__ == '__main__':
     main()
