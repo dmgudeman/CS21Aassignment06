@@ -43,7 +43,7 @@ class Game(object):
         # Create the restart button widget
         # Create a canvas widget
         # Create a label widget for the win/lose message
-        tile_size = 100
+        self.tile_size = 100
         self.restart_button = tkinter.Button(self.parent, text='restart',
                                         width=20,
                                         command=self.restart())
@@ -53,16 +53,10 @@ class Game(object):
                                              width=20)
         self.scoreboard_label.grid()
 
-        self.board = tkinter.Canvas(self.parent, width=tile_size * 3,
-                                    height=tile_size * 3)
+        self.board = tkinter.Canvas(self.parent, width=self.tile_size * 3,
+                                    height=self.tile_size * 3)
         self.board.grid()
-        for row in range(3):
-            for column in range(3):
-                self.board.create_rectangle(tile_size * row,
-                                            tile_size * column,
-                                            tile_size * (row + 1),
-                                            tile_size * (column + 1),
-                                            fill=Game.board_color)
+
 
 
 
@@ -78,12 +72,20 @@ class Game(object):
         Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                       (1, 0): 0, (1, 1): 0, (1, 2): 0,
                       (2, 0): 0, (2, 1): 0, (2, 2): 0}
+        for row in range(3):
+            for column in range(3):
+                self.board.create_rectangle(self.tile_size * row,
+                                            self.tile_size * column,
+                                            self.tile_size * (row + 1),
+                                            self.tile_size * (column + 1),
+                                            fill=Game.board_color)
 
     def restart(self):
         # This method is invoked when the user clicks on the RESTART button.
         # Erase the canvas
         # invoke initialize_game
-        pass
+        self.board.delete("all")
+        self.initialize_game()
 
     def play(self, event):
         # This method is invoked when the user clicks on a square.
