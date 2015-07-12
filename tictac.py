@@ -57,12 +57,6 @@ class Game(object):
 
         self.board.bind("<Button-1>", self.play)
 
-        Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
-                      (1, 0): 0, (1, 1): 0, (1, 2): 0,
-                      (2, 0): 0, (2, 1): 0, (2, 2): 0}
-        print("__init__ len(Game.score.card)", len(Game.sq_avail))
-
-
     def initialize_game(self):
         # These are the initializations that need to happen
         # at the beginning and after restarts
