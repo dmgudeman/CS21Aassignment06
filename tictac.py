@@ -17,21 +17,13 @@ class Game(object):
     '''
 
     # Add your class variables if needed here
-
-    player = ''
-    user = ''
-    computer = ''
-    board_color = 'green'
-
-    board = tkinter.Canvas()
     tile_owner = 0
     sq_avail = {}
     user_score = 0
     comp_score = 0
     total_score = 0
     turns = 0
-    # game_over = False
-
+    board_color = 'green'
 
     def __init__(self, parent):
         parent.title('Tic Tac Toe')
@@ -52,11 +44,10 @@ class Game(object):
                                                     width=20,
                                                     command=self.restart)
         self.parent.restart_button.grid()
-        parent.scoreboard_update = tkinter.StringVar()
-        self.parent.scoreboard_update.set('Scorecard')
-        print(parent.scoreboard_update.get())
+        self.parent.sb_message = tkinter.StringVar()
+        self.parent.sb_message.set('Scorecard')
         self.parent.scoreboard_label = tkinter.Label(self.parent,
-                                                     text=self.parent.scoreboard_update.get())
+                                                     textvariable=self.parent.sb_message)
         self.parent.scoreboard_label.grid()
 
         self.board = tkinter.Canvas(self.parent, width=self.tile_size * 3,
@@ -71,7 +62,8 @@ class Game(object):
         # at the beginning and after restarts
         Game.turns = 0
         self.game_over = False
-
+        #self.show_result("Scorecard2")
+        self.parent.sb_message.set("Score card")
         Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                          (1, 0): 0, (1, 1): 0, (1, 2): 0,
                          (2, 0): 0, (2, 1): 0, (2, 2): 0}
@@ -148,30 +140,21 @@ class Game(object):
     def check_game(self):
         # Check if the game is won or lost
         # Return True or False
-
-
         row_total = 0
         column_total = 0
-        diag_leftdown = 0
-        diag_leftup = 0
-        line_list = []
         i = 0
         for x in range(3):
             for y in range(3):
                 i += 1
                 column_total += Game.sq_avail[(x, y)]
                 if column_total == 15:
-                    print("you won column_total", column_total)
-                    self.parent.scoreboard_update.set("You won!")
-                    self.parent.scoreboard_label = tkinter.Label(self.parent,
-                                    text=self.parent.scoreboard_update.get())
-                    self.parent.scoreboard_label.grid()
+                    self.parent.sb_message.set('You Won!!!!')
                     self.game_over = True
                     return self.game_over
 
                 if column_total == 9:
-                    print("the computer won column_total", column_total)
-                    self.scoreboard_label.setvar("the computer won!")
+                    self.parent.sb_message.set('You have been ignominiously '
+                                               'defeated')
                     self.game_over = True
                     return self.game_over
                 if i == 3:
@@ -182,16 +165,12 @@ class Game(object):
                 i += 1
                 row_total += Game.sq_avail[(x, y)]
                 if row_total == 15:
-                    print("you won row total", row_total)
-                    self.parent.scoreboard_update.set("You won!")
-                    self.parent.scoreboard_label = tkinter.Label(self.parent,
-                                    text=self.parent.scoreboard_update.get())
-                    self.parent.scoreboard_label.grid()
+                    self.parent.sb_message.set('You Won!!!!')
                     self.game_over = True
                     return self.game_over
                 if row_total == 9:
-                    print("the computer won row total", row_total)
-                    self.scoreboard_label.setvar("the computer won!")
+                    self.parent.sb_message.set('You have been ignominiously '
+                                               'defeated')
                     self.game_over = True
                     return self.game_over
                 if i == 3:
@@ -201,40 +180,34 @@ class Game(object):
         diag_leftdown = Game.sq_avail[(0, 0)] + Game.sq_avail[(1, 1)] \
                         + Game.sq_avail[(2, 2)]
         if diag_leftdown == 15:
-            print("you won diag_up", diag_leftdown)
-            self.parent.scoreboard_update.set("You won!")
-            self.parent.scoreboard_label = tkinter.Label(self.parent,
-                                    text=self.parent.scoreboard_update.get())
-            self.parent.scoreboard_label.grid()
+            self.parent.sb_message.set('You Won!!!!')
             self.game_over = True
             return self.game_over
         if row_total == 9:
-            print("the computer won row total", row_total)
-            self.scoreboard_label.setvar("the computer won!")
+            self.parent.sb_message.set('You have been ignominiously defeated')
             self.game_over = True
             return self.game_over
         diag_leftup = Game.sq_avail[(2, 0)] + Game.sq_avail[(1, 1)] \
                       + Game.sq_avail[(0, 2)]
         if diag_leftup == 15:
-            print("you won diag_leftup", diag_leftup)
-            self.parent.scoreboard_update.set("You won!")
-            self.parent.scoreboard_label = tkinter.Label(self.parent,
-                                    text=self.parent.scoreboard_update.get())
-            self.parent.scoreboard_label.grid()
+            self.parent.sb_message.set('You Won!!!!')
             self.game_over = True
             return self.game_over
         if row_total == 9:
             print("the computer won row total", row_total)
-            self.scoreboard_label.setvar("the computer won!")
+            self.parent.sb_message.set('You have been ignominiously defeated')
             self.game_over = True
             return self.game_over
-        print("Game.game_over at bottom of check_game = ", self.game_over)
         if Game.turns == 9:
-            print("game is a tie")
-            self.scoreboard_label.setvar("It is a tie!")
+            self.parent.sb_message.set('It is a tie :-|')
             self.game_over = True
             return self.game_over
         return self.game_over
+
+    def show_result(self, message):
+        self.parent.sb_message.set(message)
+
+
 def main():
     # Instantiate a root window
     # Instantiate a Game object
