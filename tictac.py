@@ -22,8 +22,7 @@ class Game(object):
     user = ''
     computer = ''
     board_color = 'green'
-    user_color = 'cyan'
-    computer_color = 'yellow'
+
     board = tkinter.Canvas()
     tile_owner = 0
     sq_avail = {}
@@ -31,12 +30,14 @@ class Game(object):
     comp_score = 0
     total_score = 0
     turns = 0
-    #game_over = False
+    # game_over = False
 
 
     def __init__(self, parent):
         parent.title('Tic Tac Toe')
         self.parent = parent
+        self.user_color = 'cyan'
+        self.comp_color = 'yellow'
 
 
         # Add your instance variables  if needed here
@@ -46,21 +47,21 @@ class Game(object):
         self.tile_size = 100
         self.game_over = False
 
-        self.parent.restart_button = tkinter.Button(self.parent, text='restart',
-                                        width=20,
-                                        command=self.restart)
+        self.parent.restart_button = tkinter.Button(self.parent,
+                                                    text='restart',
+                                                    width=20,
+                                                    command=self.restart)
         self.parent.restart_button.grid()
-
-        self.scoreboard_label = tkinter.Label(self.parent, text='scoreboard',
-                                             width=20)
-        self.scoreboard_label.grid()
+        parent.scoreboard_update = tkinter.StringVar()
+        self.parent.scoreboard_update.set('Scorecard')
+        print(parent.scoreboard_update.get())
+        self.parent.scoreboard_label = tkinter.Label(self.parent,
+                                                     text=self.parent.scoreboard_update.get())
+        self.parent.scoreboard_label.grid()
 
         self.board = tkinter.Canvas(self.parent, width=self.tile_size * 3,
                                     height=self.tile_size * 3)
         self.board.grid()
-
-
-
 
         self.board.bind("<Button-1>", self.play)
         self.initialize_game()
@@ -72,8 +73,8 @@ class Game(object):
         self.game_over = False
 
         Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
-                      (1, 0): 0, (1, 1): 0, (1, 2): 0,
-                      (2, 0): 0, (2, 1): 0, (2, 2): 0}
+                         (1, 0): 0, (1, 1): 0, (1, 2): 0,
+                         (2, 0): 0, (2, 1): 0, (2, 2): 0}
         for row in range(3):
             for column in range(3):
                 self.board.create_rectangle(self.tile_size * row,
@@ -97,16 +98,17 @@ class Game(object):
 
             grid_row = event.x // 100
             grid_column = event.y // 100
-            print("game sequare available = ", Game.sq_avail[(grid_row, grid_column)])
+            print("game sequare available = ",
+                  Game.sq_avail[(grid_row, grid_column)])
             if Game.sq_avail[(grid_row, grid_column)] == 0:
                 for row in range(3):
                     for column in range(3):
                         if row == grid_row and column == grid_column:
-                            self.board.create_rectangle(grid_row*100,
-                                                grid_column*100,
-                                                grid_row*100+100,
-                                                grid_column*100+100,
-                                                fill='black')
+                            self.board.create_rectangle(grid_row * 100,
+                                                        grid_column * 100,
+                                                        grid_row * 100 + 100,
+                                                        grid_column * 100 + 100,
+                                                        fill=self.user_color)
                             Game.sq_avail[(row, column)] = 5
                             Game.turns += 1
                             print("Game.turns = ", Game.turns)
@@ -120,8 +122,8 @@ class Game(object):
                             print("this fired")
 
                 self.board.grid()
-        #else:
-           # self.play(event)
+                # else:
+                # self.play(event)
 
     def computer_move(self):
         ran_x = random.randint(0, 2)
@@ -130,11 +132,11 @@ class Game(object):
 
         if Game.sq_avail[(ran_x, ran_y)] == 0:
             Game.sq_avail[(ran_x, ran_y)] = 3
-            self.board.create_rectangle(ran_x*100,
-                                        ran_y*100,
-                                        ran_x*100+100,
-                                        ran_y*100+100,
-                                        fill='white')
+            self.board.create_rectangle(ran_x * 100,
+                                        ran_y * 100,
+                                        ran_x * 100 + 100,
+                                        ran_y * 100 + 100,
+                                        fill=self.comp_color)
             Game.turns += 1
             print("Game.turns = ", Game.turns)
 
@@ -147,10 +149,7 @@ class Game(object):
         # Check if the game is won or lost
         # Return True or False
 
-        if Game.turns == 9:
-            print("game is a tie")
-            game_over = True
-            return game_over
+
         row_total = 0
         column_total = 0
         diag_leftdown = 0
@@ -163,11 +162,16 @@ class Game(object):
                 column_total += Game.sq_avail[(x, y)]
                 if column_total == 15:
                     print("you won column_total", column_total)
+                    self.parent.scoreboard_update.set("You won!")
+                    self.parent.scoreboard_label = tkinter.Label(self.parent,
+                                    text=self.parent.scoreboard_update.get())
+                    self.parent.scoreboard_label.grid()
                     self.game_over = True
                     return self.game_over
 
                 if column_total == 9:
                     print("the computer won column_total", column_total)
+                    self.scoreboard_label.setvar("the computer won!")
                     self.game_over = True
                     return self.game_over
                 if i == 3:
@@ -179,10 +183,15 @@ class Game(object):
                 row_total += Game.sq_avail[(x, y)]
                 if row_total == 15:
                     print("you won row total", row_total)
+                    self.parent.scoreboard_update.set("You won!")
+                    self.parent.scoreboard_label = tkinter.Label(self.parent,
+                                    text=self.parent.scoreboard_update.get())
+                    self.parent.scoreboard_label.grid()
                     self.game_over = True
                     return self.game_over
                 if row_total == 9:
                     print("the computer won row total", row_total)
+                    self.scoreboard_label.setvar("the computer won!")
                     self.game_over = True
                     return self.game_over
                 if i == 3:
@@ -190,28 +199,42 @@ class Game(object):
                     row_total = 0
 
         diag_leftdown = Game.sq_avail[(0, 0)] + Game.sq_avail[(1, 1)] \
-                                           + Game.sq_avail[(2, 2)]
+                        + Game.sq_avail[(2, 2)]
         if diag_leftdown == 15:
             print("you won diag_up", diag_leftdown)
+            self.parent.scoreboard_update.set("You won!")
+            self.parent.scoreboard_label = tkinter.Label(self.parent,
+                                    text=self.parent.scoreboard_update.get())
+            self.parent.scoreboard_label.grid()
             self.game_over = True
             return self.game_over
         if row_total == 9:
             print("the computer won row total", row_total)
+            self.scoreboard_label.setvar("the computer won!")
             self.game_over = True
             return self.game_over
         diag_leftup = Game.sq_avail[(2, 0)] + Game.sq_avail[(1, 1)] \
-                                         + Game.sq_avail[(0, 2)]
+                      + Game.sq_avail[(0, 2)]
         if diag_leftup == 15:
             print("you won diag_leftup", diag_leftup)
+            self.parent.scoreboard_update.set("You won!")
+            self.parent.scoreboard_label = tkinter.Label(self.parent,
+                                    text=self.parent.scoreboard_update.get())
+            self.parent.scoreboard_label.grid()
             self.game_over = True
             return self.game_over
         if row_total == 9:
             print("the computer won row total", row_total)
+            self.scoreboard_label.setvar("the computer won!")
             self.game_over = True
             return self.game_over
         print("Game.game_over at bottom of check_game = ", self.game_over)
+        if Game.turns == 9:
+            print("game is a tie")
+            self.scoreboard_label.setvar("It is a tie!")
+            self.game_over = True
+            return self.game_over
         return self.game_over
-
 def main():
     # Instantiate a root window
     # Instantiate a Game object
