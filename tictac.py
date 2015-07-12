@@ -11,8 +11,6 @@ import tkinter
 import random
 
 
-
-tally_array = []
 class Game(object):
     '''
     Enter the class docstring here
@@ -32,7 +30,7 @@ class Game(object):
     user_score = 0
     comp_score = 0
     total_score = 0
-    turns = 0;
+    turns = 0
     game_over = False
 
 
@@ -46,17 +44,21 @@ class Game(object):
         # Create a canvas widget
         # Create a label widget for the win/lose message
         tile_size = 100
-        parent.restart_button = tkinter.Button(self.parent, text='restart',
+        self.restart_button = tkinter.Button(self.parent, text='restart',
                                         width=20,
                                         command=self.restart())
-        parent.restart_button.grid()
+        self.restart_button.grid()
 
-        parent.board = tkinter.Canvas(self.parent, width=tile_size * 3,
+        self.scoreboard_label = tkinter.Label(self.parent, text='scoreboard',
+                                             width=20)
+        self.scoreboard_label.grid()
+
+        self.board = tkinter.Canvas(self.parent, width=tile_size * 3,
                                     height=tile_size * 3)
-        parent.board.grid()
+        self.board.grid()
         for row in range(3):
             for column in range(3):
-                parent.board.create_rectangle(tile_size * row,
+                self.board.create_rectangle(tile_size * row,
                                             tile_size * column,
                                             tile_size * (row + 1),
                                             tile_size * (column + 1),
@@ -64,7 +66,7 @@ class Game(object):
 
 
 
-        parent.board.bind("<Button-1>", self.play)
+        self.board.bind("<Button-1>", self.play)
         self.initialize_game()
 
     def initialize_game(self):
@@ -93,7 +95,7 @@ class Game(object):
             for row in range(3):
                 for column in range(3):
                     if row == grid_row and column == grid_column:
-                        self.parent.board.create_rectangle(grid_row*100,
+                        self.board.create_rectangle(grid_row*100,
                                                 grid_column*100,
                                                 grid_row*100+100,
                                                 grid_column*100+100,
@@ -111,7 +113,7 @@ class Game(object):
                             exit()
                         print("this fired")
 
-            self.parent.board.grid()
+            self.board.grid()
         #else:
            # self.play(event)
 
@@ -122,7 +124,7 @@ class Game(object):
 
         if Game.sq_avail[(ran_x, ran_y)] == 0:
             Game.sq_avail[(ran_x, ran_y)] = 3
-            self.parent.board.create_rectangle(ran_x*100,
+            self.board.create_rectangle(ran_x*100,
                                         ran_y*100,
                                         ran_x*100+100,
                                         ran_y*100+100,
@@ -210,6 +212,7 @@ def main():
     # Instantiate a Game object
     # Enter the main event loop
     root = tkinter.Tk()
+    print("root = ", type(root))
     ttgame = Game(root)
     root.mainloop()
 
