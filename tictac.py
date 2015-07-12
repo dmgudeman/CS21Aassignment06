@@ -46,10 +46,10 @@ class Game(object):
         self.tile_size = 100
         self.game_over = False
 
-        self.restart_button = tkinter.Button(self.parent, text='restart',
+        self.parent.restart_button = tkinter.Button(self.parent, text='restart',
                                         width=20,
-                                        command=self.restart())
-        self.restart_button.grid()
+                                        command=self.restart)
+        self.parent.restart_button.grid()
 
         self.scoreboard_label = tkinter.Label(self.parent, text='scoreboard',
                                              width=20)
@@ -86,6 +86,7 @@ class Game(object):
         # This method is invoked when the user clicks on the RESTART button.
         # Erase the canvas
         # invoke initialize_game
+        print("THIS IS IN RESTART")
         self.board.delete("all")
         self.initialize_game()
 
