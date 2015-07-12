@@ -90,32 +90,34 @@ class Game(object):
     def play(self, event):
         # This method is invoked when the user clicks on a square.
         # If the square is already taken, do nothing.
-        grid_row = event.x // 100
-        grid_column = event.y // 100
-        print("game sequare available = ", Game.sq_avail[(grid_row, grid_column)])
-        if Game.sq_avail[(grid_row, grid_column)] == 0:
-            for row in range(3):
-                for column in range(3):
-                    if row == grid_row and column == grid_column:
-                        self.board.create_rectangle(grid_row*100,
+        if not Game.game_over:
+
+            grid_row = event.x // 100
+            grid_column = event.y // 100
+            print("game sequare available = ", Game.sq_avail[(grid_row, grid_column)])
+            if Game.sq_avail[(grid_row, grid_column)] == 0:
+                for row in range(3):
+                    for column in range(3):
+                        if row == grid_row and column == grid_column:
+                            self.board.create_rectangle(grid_row*100,
                                                 grid_column*100,
                                                 grid_row*100+100,
                                                 grid_column*100+100,
                                                 fill='black')
-                        Game.sq_avail[(row, column)] = 5
-                        Game.turns += 1
-                        print("Game.turns = ", Game.turns)
-                        Game.check_game(self)
-                        if not Game.game_over:
-                            print("Game.game_over =", Game.game_over)
-                            Game.computer_move(self)
+                            Game.sq_avail[(row, column)] = 5
+                            Game.turns += 1
+                            print("Game.turns = ", Game.turns)
                             Game.check_game(self)
-                        if Game.game_over:
-                            print("game over")
-                            exit()
-                        print("this fired")
+                            if not Game.game_over:
+                                print("Game.game_over =", Game.game_over)
+                                Game.computer_move(self)
+                                Game.check_game(self)
+                            if Game.game_over:
+                                print("game over")
+                                exit()
+                            print("this fired")
 
-            self.board.grid()
+                self.board.grid()
         #else:
            # self.play(event)
 
@@ -177,7 +179,7 @@ class Game(object):
                 if row_total == 15:
                     print("you won row total", row_total)
                     game_over = True
-                    return game_over
+                    return Game.game_over
                 if row_total == 9:
                     print("the computer won row total", row_total)
                     game_over = True
