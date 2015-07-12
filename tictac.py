@@ -102,7 +102,6 @@ class Game(object):
         self.initialize_game()      # initializes game
 
     def play(self, event):
-
         """
         It is an event handler for mouse clicks
         on the board.
@@ -133,52 +132,74 @@ class Game(object):
 
                             # check the new state of the game
                             Game.check_game(self)
-                             if not self.game_over:
+                            if not self.game_over:
 
                                 # if game not over call computer move
                                 Game.computer_move(self)
                                 Game.check_game(self)  # check again
 
     def computer_move(self):
-        ran_x = random.randint(0, 2)
+        """
+        generates the computers move randomly
+
+        :parameter none
+        :return:   none
+        """
+
+        ran_x = random.randint(0, 2)  # generate a random coordinates
         ran_y = random.randint(0, 2)
 
-        if Game.sq_avail[(ran_x, ran_y)] == 0:
+        if Game.sq_avail[(ran_x, ran_y)] == 0:  # check tile availability
+
+            # if okay set tile value to computer specific amount
             Game.sq_avail[(ran_x, ran_y)] = 3
+
+            # color the appropriate tile
             self.board.create_rectangle(ran_x * 100,
                                         ran_y * 100,
                                         ran_x * 100 + 100,
                                         ran_y * 100 + 100,
                                         fill=self.comp_color)
-            Game.turns += 1
+            Game.turns += 1  # increment the turn counter
         else:
-            self.computer_move()
-            self.board.grid()
-        Game.check_game(self)
+            self.computer_move()  # if tile full re-call method
 
     def check_game(self):
-        # Check if the game is won or lost
-        # Return True or False
-        row_total = 0
-        column_total = 0
+        """
+        checks the game to see if there is a win lose or draw
+
+        it checks the columns, rows and diagonals separately. Updates the
+        game state flag - game_over. Jt updates the label as to the new
+        state of the game.
+
+        parameter: none
+        :return:   the boolean state of the game
+        """
+        row_total = 0     # initialize variable to collect totals
+        column_total = 0  # initialize a counter
         i = 0
+
+        # iterate through the columns. A user 3-tile positive will add to 15
+        # a computer 3-tile posiitve will add to 9
         for x in range(3):
             for y in range(3):
                 i += 1
                 column_total += Game.sq_avail[(x, y)]
                 if column_total == 15:
-                    self.parent.sb_message.set('You Won!!!!')
-                    self.game_over = True
+                    self.parent.sb_message.set('You Won!!!!')  # label update
+                    self.game_over = True  # set the game over flag
                     return self.game_over
 
                 if column_total == 9:
                     self.parent.sb_message.set('You have been ignominiously '
                                                'defeated')
-                    self.game_over = True
+                    self.game_over = True  # set the game over flag
                     return self.game_over
                 if i == 3:
-                    i = 0
-                    column_total = 0
+                    i = 0            # after adding 3 tiles reset index
+                    column_total = 0 # reset column total
+
+        # iterate through the rows. Comments are homologous to column iteration
         for y in range(3):
             for x in range(3):
                 i += 1
@@ -196,6 +217,7 @@ class Game(object):
                     i = 0
                     row_total = 0
 
+        # check the diagonals in a similar way
         diag_leftdown = Game.sq_avail[(0, 0)] + Game.sq_avail[(1, 1)] \
                         + Game.sq_avail[(2, 2)]
         if diag_leftdown == 15:
@@ -206,6 +228,7 @@ class Game(object):
             self.parent.sb_message.set('You have been ignominiously defeated')
             self.game_over = True
             return self.game_over
+
         diag_leftup = Game.sq_avail[(2, 0)] + Game.sq_avail[(1, 1)] \
                       + Game.sq_avail[(0, 2)]
         if diag_leftup == 15:
@@ -216,20 +239,23 @@ class Game(object):
             self.parent.sb_message.set('You have been ignominiously defeated')
             self.game_over = True
             return self.game_over
+
+        # stop the game and call a tie if all the tiles have been exhausted
         if Game.turns == 9:
             self.parent.sb_message.set('It is a tie :-|')
             self.game_over = True
             return self.game_over
+
+        # if all else fails return original state of table
         return self.game_over
 
 def main():
     # Instantiate a root window
     # Instantiate a Game object
     # Enter the main event loop
-    root = tkinter.Tk()
-    print("root = ", type(root))
-    ttgame = Game(root)
-    root.mainloop()
+    root = tkinter.Tk()             # Instantiate a root window
+    ttgame = Game(root)             # Instantiate a Game object
+    root.mainloop()                 # Enter the main event loop, start waiting
 
 if __name__ == '__main__':
     main()
