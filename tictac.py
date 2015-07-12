@@ -23,8 +23,9 @@ class Game(object):
     player = ''
     user = ''
     computer = ''
-    user_color = 'green'
-    computer_color = 'blue'
+    board_color = 'green'
+    user_color = 'cyan'
+    computer_color = 'yellow'
     board = tkinter.Canvas()
     tile_owner = 0
     sq_avail = {}
@@ -73,16 +74,11 @@ class Game(object):
                       (2, 0): 0, (2, 1): 0, (2, 2): 0}
         for row in range(3):
             for column in range(3):
-                if(row + column) % 2 == 0:
-                    color = 'cyan'
-                else:
-                    color = 'yellow'
-
                 self.board.create_rectangle(self.tile_size * row,
                                             self.tile_size * column,
                                             self.tile_size * (row + 1),
                                             self.tile_size * (column + 1),
-                                            fill=color)
+                                            fill=Game.board_color)
         self.board.grid()
 
     def restart(self):
