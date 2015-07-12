@@ -6,65 +6,82 @@
 # Date:       July 12, 2015
 # Course:     CS21A Foothill College
 # -----------------------------------------------------------------------------
-'''
+"""
 Module to create a tic tac toe game where the user plays against the computer
 The user always starts first and the computer picks squares at random
-'''
+"""
 import tkinter
 import random
 
 class Game(object):
-    '''
+    """
     Creates a tic tac toe board. It has a restart button and a label to
     state who wins or loses. The user always starts first. User squares are
-    chosen by mouse click. When a square is chosen it changes color. The
-    computer moves immediately after the user choice is made.
-    '''
-
-    sq_avail = {}
-    turns = 0
-    board_color = 'green'
+    chosen by mouse click. When a square (aka tile) is chosen it changes color.
+    The computer moves immediately after the user choice is made.
+    """
+    # class variables
+    sq_avail = {}           # a dictionary, holds an integer state the tiles
+    turns = 0               # count how many choices have been made
+    board_color = 'green'   # color of the initial board tiles
 
     def __init__(self, parent):
         parent.title('Tic Tac Toe')
         self.parent = parent
-        self.user_color = 'cyan'
-        self.comp_color = 'yellow'
 
-        # Add your instance variables  if needed here
-        # Create the restart button widget
-        # Create a canvas widget
-        # Create a label widget for the win/lose message
-        self.tile_size = 100
-        self.game_over = False
+        # instance variables
+        self.user_color = 'cyan'    # color of the user tiles
+        self.comp_color = 'yellow'  # color of the computer tiles
+        self.tile_size = 100        # size of tile
+        self.game_over = False      # boolean state of the game
 
+        # create a tkinter Button for restarting the game
         self.parent.restart_button = tkinter.Button(self.parent,
                                                     text='restart',
                                                     width=20,
                                                     command=self.restart)
+        # uset the 'grid' geometry manager and put the button on grid
         self.parent.restart_button.grid()
+
+        # create a label
+        # use the tkinter StringVar construct to hold the dispaly string
         self.parent.sb_message = tkinter.StringVar()
-        self.parent.sb_message.set('Scorecard')
+        self.parent.sb_message.set('Scorecard') # set an initial string
+
+        # create label with 'textvariable' to collect the StringVar value
         self.parent.scoreboard_label = tkinter.Label(self.parent,
                                         textvariable=self.parent.sb_message)
-        self.parent.scoreboard_label.grid()
+        self.parent.scoreboard_label.grid()  # place it on the grid
 
+        # create a Canvas that is size dependent on the tile size
         self.board = tkinter.Canvas(self.parent, width=self.tile_size * 3,
                                     height=self.tile_size * 3)
-        self.board.grid()
+        self.board.grid()  # place it on the grid
 
-        self.board.bind("<Button-1>", self.play)
-        self.initialize_game()
+        # bind mouse click to Canvas (aka board) to collect tile clicks
+        self.board.bind("<Button-1>", self.play)  # calls the 'play' callback
+        self.initialize_game() # initialize a game
 
     def initialize_game(self):
-        # These are the initializations that need to happen
-        # at the beginning and after restarts
-        Game.turns = 0
-        self.game_over = False
-        self.parent.sb_message.set("Score card")
+        """
+        intializes the game, used to start as well as restart the game
+
+        resets number of turns, boolean game state, label message,
+        dictionary of tile states, board tiles
+        parameter: none
+
+        :return: none
+        """
+        Game.turns = 0                 # resets turn counter
+        self.game_over = False         # resets boolean game state
+        self.parent.sb_message.set("Score card")  # resets label message
+
+        # sets dict representation of the tile values to 0
         Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                          (1, 0): 0, (1, 1): 0, (1, 2): 0,
                          (2, 0): 0, (2, 1): 0, (2, 2): 0}
+
+        # constructs the tiles
         for row in range(3):
             for column in range(3):
                 self.board.create_rectangle(self.tile_size * row,
@@ -74,34 +91,53 @@ class Game(object):
                                             fill=Game.board_color)
 
     def restart(self):
-        # This method is invoked when the user clicks on the RESTART button.
-        # Erase the canvas
-        # invoke initialize_game
-        self.board.delete("all")
-        self.initialize_game()
+        """
+        restarts the game using th initialize method
+        erases the tiles of last game and calls initialize_game
+
+        parameter: none
+        :return: none
+        """
+        self.board.delete("all")    # erased board
+        self.initialize_game()      # initializes game
 
     def play(self, event):
-        # This method is invoked when the user clicks on a square.
-        # If the square is already taken, do nothing.
-        if not self.game_over:
 
-            grid_row = event.x // 100
-            grid_column = event.y // 100
+        """
+        It is an event handler for mouse clicks
+        on the board.
+
+        :param event: the mouse click on the board (aka canvas)
+        :return:
+        """
+        if not self.game_over:      # check to see if game_over is True
+
+            grid_row = event.x // 100       # use floor function to identify
+            grid_column = event.y // 100    # the tile owning the mouse click
+
+            # check to see if the tile has been clicked before
             if Game.sq_avail[(grid_row, grid_column)] == 0:
-                for row in range(3):
-                    for column in range(3):
+
+                for row in range(3):         # iterate the tiles to id the
+                    for column in range(3):  # tile and change its color
                         if row == grid_row and column == grid_column:
                             self.board.create_rectangle(grid_row * 100,
                                                     grid_column * 100,
                                                     grid_row * 100 + 100,
                                                     grid_column * 100 + 100,
                                                     fill=self.user_color)
+                            # set the tile value to 5 which is a user
+                            # specific increment
                             Game.sq_avail[(row, column)] = 5
-                            Game.turns += 1
+                            Game.turns += 1        # increment turn count
+
+                            # check the new state of the game
                             Game.check_game(self)
-                            if not self.game_over:
+                             if not self.game_over:
+
+                                # if game not over call computer move
                                 Game.computer_move(self)
-                                Game.check_game(self)
+                                Game.check_game(self)  # check again
 
     def computer_move(self):
         ran_x = random.randint(0, 2)
