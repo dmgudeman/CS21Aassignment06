@@ -19,7 +19,7 @@ class Game(object):
     '''
 
     # Add your class variables if needed here
-    tile_size = 100
+
     player = ''
     user = ''
     computer = ''
@@ -40,22 +40,32 @@ class Game(object):
         parent.title('Tic Tac Toe')
         self.parent = parent
 
+
         # Add your instance variables  if needed here
         # Create the restart button widget
         # Create a canvas widget
         # Create a label widget for the win/lose message
-
-        restart_button = tkinter.Button(self.parent, text='restart',
+        tile_size = 100
+        parent.restart_button = tkinter.Button(self.parent, text='restart',
                                         width=20,
                                         command=self.restart())
-        restart_button.grid()
+        parent.restart_button.grid()
 
-        self.board = tkinter.Canvas(self.parent, width=self.tile_size * 3,
-                                    height=self.tile_size * 3)
+        parent.board = tkinter.Canvas(self.parent, width=tile_size * 3,
+                                    height=tile_size * 3)
+        parent.board.grid()
+        for row in range(3):
+            for column in range(3):
+                parent.board.create_rectangle(tile_size * row,
+                                            tile_size * column,
+                                            tile_size * (row + 1),
+                                            tile_size * (column + 1),
+                                            fill=Game.board_color)
 
+
+
+        parent.board.bind("<Button-1>", self.play)
         self.initialize_game()
-
-        self.board.bind("<Button-1>", self.play)
 
     def initialize_game(self):
         # These are the initializations that need to happen
@@ -66,14 +76,6 @@ class Game(object):
         Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                       (1, 0): 0, (1, 1): 0, (1, 2): 0,
                       (2, 0): 0, (2, 1): 0, (2, 2): 0}
-        for row in range(3):
-            for column in range(3):
-                self.board.create_rectangle(self.tile_size * row,
-                                            self.tile_size * column,
-                                            self.tile_size * (row + 1),
-                                            self.tile_size * (column + 1),
-                                            fill=Game.board_color)
-        self.board.grid()
 
     def restart(self):
         # This method is invoked when the user clicks on the RESTART button.
@@ -86,11 +88,12 @@ class Game(object):
         # If the square is already taken, do nothing.
         grid_row = event.x // 100
         grid_column = event.y // 100
+        print("game sequare available = ", Game.sq_avail[(grid_row, grid_column)])
         if Game.sq_avail[(grid_row, grid_column)] == 0:
             for row in range(3):
                 for column in range(3):
                     if row == grid_row and column == grid_column:
-                        self.board.create_rectangle(grid_row*100,
+                        self.parent.board.create_rectangle(grid_row*100,
                                                 grid_column*100,
                                                 grid_row*100+100,
                                                 grid_column*100+100,
@@ -108,9 +111,9 @@ class Game(object):
                             exit()
                         print("this fired")
 
-            self.board.grid()
-        else:
-            self.play(event)
+            self.parent.board.grid()
+        #else:
+           # self.play(event)
 
     def computer_move(self):
         ran_x = random.randint(0, 2)
@@ -119,7 +122,7 @@ class Game(object):
 
         if Game.sq_avail[(ran_x, ran_y)] == 0:
             Game.sq_avail[(ran_x, ran_y)] = 3
-            self.board.create_rectangle(ran_x*100,
+            self.parent.board.create_rectangle(ran_x*100,
                                         ran_y*100,
                                         ran_x*100+100,
                                         ran_y*100+100,
@@ -129,7 +132,7 @@ class Game(object):
 
         else:
             self.computer_move()
-        self.board.grid()
+            self.parent.board.grid()
         Game.check_game(self)
 
     def check_game(self):
