@@ -62,7 +62,6 @@ class Game(object):
         # at the beginning and after restarts
         Game.turns = 0
         self.game_over = False
-        #self.show_result("Scorecard2")
         self.parent.sb_message.set("Score card")
         Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                          (1, 0): 0, (1, 1): 0, (1, 2): 0,
@@ -79,7 +78,6 @@ class Game(object):
         # This method is invoked when the user clicks on the RESTART button.
         # Erase the canvas
         # invoke initialize_game
-        print("THIS IS IN RESTART")
         self.board.delete("all")
         self.initialize_game()
 
@@ -90,8 +88,6 @@ class Game(object):
 
             grid_row = event.x // 100
             grid_column = event.y // 100
-            print("game sequare available = ",
-                  Game.sq_avail[(grid_row, grid_column)])
             if Game.sq_avail[(grid_row, grid_column)] == 0:
                 for row in range(3):
                     for column in range(3):
@@ -103,24 +99,19 @@ class Game(object):
                                                         fill=self.user_color)
                             Game.sq_avail[(row, column)] = 5
                             Game.turns += 1
-                            print("Game.turns = ", Game.turns)
                             Game.check_game(self)
                             if not self.game_over:
-                                print("Game.game_over =", self.game_over)
                                 Game.computer_move(self)
                                 Game.check_game(self)
-                            if self.game_over:
-                                print("game over")
-                            print("this fired")
+                            #if self.game_over:
+                                #print("game over")
+                            #print("this fired")
 
                 self.board.grid()
-                # else:
-                # self.play(event)
 
     def computer_move(self):
         ran_x = random.randint(0, 2)
         ran_y = random.randint(0, 2)
-        print("entered computer_move")
 
         if Game.sq_avail[(ran_x, ran_y)] == 0:
             Game.sq_avail[(ran_x, ran_y)] = 3
@@ -130,8 +121,6 @@ class Game(object):
                                         ran_y * 100 + 100,
                                         fill=self.comp_color)
             Game.turns += 1
-            print("Game.turns = ", Game.turns)
-
         else:
             self.computer_move()
             self.board.grid()
@@ -194,7 +183,6 @@ class Game(object):
             self.game_over = True
             return self.game_over
         if row_total == 9:
-            print("the computer won row total", row_total)
             self.parent.sb_message.set('You have been ignominiously defeated')
             self.game_over = True
             return self.game_over
