@@ -2,18 +2,23 @@
 # Name:       tictac
 # Purpose:    Implement a game of Tic Tac Toe
 #
-# Author:
+# Author:     David Gudeman
+# Date:       July 12, 2015
+# Course:     CS21A Foothill College
 # -----------------------------------------------------------------------------
 '''
-Enter the module docstring here
+Module to create a tic tac toe game where the user plays against the computer
+The user always starts first and the computer picks squares at random
 '''
 import tkinter
 import random
 
-
 class Game(object):
     '''
-    Enter the class docstring here
+    Creates a tic tac toe board. It has a restart button and a label to
+    state who wins or loses. The user always starts first. User squares are
+    chosen by mouse click. When a square is chosen it changes color. The
+    computer moves immediately after the user choice is made.
     '''
 
     sq_avail = {}
