@@ -172,7 +172,7 @@ class Game(object):
             self.parent.sb_message.set('You Won!!!!')
             self.game_over = True
             return self.game_over
-        if row_total == 9:
+        if diag_leftdown == 9:
             self.parent.sb_message.set('You have been ignominiously defeated')
             self.game_over = True
             return self.game_over
@@ -182,7 +182,7 @@ class Game(object):
             self.parent.sb_message.set('You Won!!!!')
             self.game_over = True
             return self.game_over
-        if row_total == 9:
+        if diag_leftup == 9:
             self.parent.sb_message.set('You have been ignominiously defeated')
             self.game_over = True
             return self.game_over
