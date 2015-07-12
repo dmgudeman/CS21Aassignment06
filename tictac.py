@@ -134,7 +134,7 @@ class Game(object):
 
         else:
             self.computer_move()
-            self.parent.board.grid()
+            self.board.grid()
         Game.check_game(self)
 
     def check_game(self):
