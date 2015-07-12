@@ -177,7 +177,7 @@ class Game(object):
                     return game_over
                 if i == 3:
                     i = 0
-                    column_total = 0
+                    row_total = 0
 
         diag_leftdown = Game.sq_avail[(0, 0)] + Game.sq_avail[(1, 1)] \
                                            + Game.sq_avail[(2, 2)]
