@@ -31,7 +31,7 @@ class Game(object):
     comp_score = 0
     total_score = 0
     turns = 0
-    game_over = False
+    #game_over = False
 
 
     def __init__(self, parent):
@@ -44,6 +44,8 @@ class Game(object):
         # Create a canvas widget
         # Create a label widget for the win/lose message
         self.tile_size = 100
+        self.game_over = False
+
         self.restart_button = tkinter.Button(self.parent, text='restart',
                                         width=20,
                                         command=self.restart())
@@ -67,7 +69,7 @@ class Game(object):
         # These are the initializations that need to happen
         # at the beginning and after restarts
         Game.turns = 0
-        Game.game_over = False
+        self.game_over = False
 
         Game.sq_avail = {(0, 0): 0, (0, 1): 0, (0, 2): 0,
                       (1, 0): 0, (1, 1): 0, (1, 2): 0,
@@ -90,7 +92,7 @@ class Game(object):
     def play(self, event):
         # This method is invoked when the user clicks on a square.
         # If the square is already taken, do nothing.
-        if not Game.game_over:
+        if not self.game_over:
 
             grid_row = event.x // 100
             grid_column = event.y // 100
@@ -108,13 +110,12 @@ class Game(object):
                             Game.turns += 1
                             print("Game.turns = ", Game.turns)
                             Game.check_game(self)
-                            if not Game.game_over:
-                                print("Game.game_over =", Game.game_over)
+                            if not self.game_over:
+                                print("Game.game_over =", self.game_over)
                                 Game.computer_move(self)
                                 Game.check_game(self)
-                            if Game.game_over:
+                            if self.game_over:
                                 print("game over")
-                                exit()
                             print("this fired")
 
                 self.board.grid()
@@ -147,7 +148,6 @@ class Game(object):
 
         if Game.turns == 9:
             print("game is a tie")
-            exit()
             game_over = True
             return game_over
         row_total = 0
@@ -162,13 +162,13 @@ class Game(object):
                 column_total += Game.sq_avail[(x, y)]
                 if column_total == 15:
                     print("you won column_total", column_total)
-                    game_over = True
-                    return game_over
+                    self.game_over = True
+                    return self.game_over
 
                 if column_total == 9:
                     print("the computer won column_total", column_total)
-                    game_over = True
-                    return game_over
+                    self.game_over = True
+                    return self.game_over
                 if i == 3:
                     i = 0
                     column_total = 0
@@ -178,12 +178,12 @@ class Game(object):
                 row_total += Game.sq_avail[(x, y)]
                 if row_total == 15:
                     print("you won row total", row_total)
-                    game_over = True
-                    return Game.game_over
+                    self.game_over = True
+                    return self.game_over
                 if row_total == 9:
                     print("the computer won row total", row_total)
-                    game_over = True
-                    return game_over
+                    self.game_over = True
+                    return self.game_over
                 if i == 3:
                     i = 0
                     row_total = 0
@@ -192,24 +192,24 @@ class Game(object):
                                            + Game.sq_avail[(2, 2)]
         if diag_leftdown == 15:
             print("you won diag_up", diag_leftdown)
-            game_over = True
-            return game_over
+            self.game_over = True
+            return self.game_over
         if row_total == 9:
             print("the computer won row total", row_total)
-            game_over = True
-            return game_over
+            self.game_over = True
+            return self.game_over
         diag_leftup = Game.sq_avail[(2, 0)] + Game.sq_avail[(1, 1)] \
                                          + Game.sq_avail[(0, 2)]
         if diag_leftup == 15:
             print("you won diag_leftup", diag_leftup)
-            game_over = True
-            return game_over
+            self.game_over = True
+            return self.game_over
         if row_total == 9:
             print("the computer won row total", row_total)
-            game_over = True
-            return game_over
-        print("Game.game_over at bottom of check_game = ", Game.game_over)
-        return Game.game_over
+            self.game_over = True
+            return self.game_over
+        print("Game.game_over at bottom of check_game = ", self.game_over)
+        return self.game_over
 
 def main():
     # Instantiate a root window
